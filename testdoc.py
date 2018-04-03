@@ -24,8 +24,8 @@ eucDistS, eucDistDest, nextPoolID,toShortPathSources, toShortPathDest, individua
 
 #print (toShortPathSources)
 
-d1TestSource = dict(itertools.islice(iter(toShortPathSources.items()),40))
-d1TestDest = dict(itertools.islice(iter(toShortPathDest.items()),40))
+d1TestSource = dict(itertools.islice(iter(toShortPathSources.items()),100))
+d1TestDest = dict(itertools.islice(iter(toShortPathDest.items()),100))
 
 convObj = ConversionShortPath.Conversion()
 sourceDetails,destDetails = convObj.getShortestPathDetailDict(d1TestSource,d1TestDest)
