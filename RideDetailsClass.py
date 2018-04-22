@@ -6,6 +6,7 @@ Created on Wed Mar 21 14:49:07 2018
 """
 
 from math import radians, cos, sin, asin, sqrt
+import time
 
 #input - connection object, no. of skipped records
 #output - locationDict - key = trip_ids, value = [longPickup, latPickup, longDropoff, latDropoff]
@@ -19,14 +20,14 @@ class RideDetailClass:
     #time window of 5 minutes
     
     def getFirstRecordPickupTimeStamp(self,connObj,skippedRecords):
-       query = "SELECT tpep_pickup_datetime FROM neworiginal_data limit " + skippedRecords + ", 1";
+       query = "SELECT tpep_pickup_datetime FROM neworiginal_data order by tpep_pickup_datetime limit " + skippedRecords + ", 1";
        cursor = connObj.cursor();
        cursor.execute(query);
        record = cursor.fetchone()
        return record[0]
         
     def getRideDetails(self, connObj,skippedRecOffset):
-        
+        tic = time.clock()
         locationDict = dict() #pickup and dropoffs
         fareAmountDict = dict()
         dropoffTimeDict = dict()
@@ -51,7 +52,8 @@ class RideDetailClass:
             dropoffTimeDict[row[0]] = row[2]
             passengerCount[row[0]] = row[3]
             new_offset = new_offset+1
-        
+        toc = time.clock()
+        print("Database time: ", toc-tic)
         
         return locationDict,fareAmountDict, passengerCount,dropoffTimeDict,new_offset
     

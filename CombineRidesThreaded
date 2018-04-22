@@ -1,0 +1,85 @@
+import json
+import time
+import urllib3
+from threading import Thread
+from queue import Queue
+       
+class Conversion:
+    
+    concurrent = 100
+    conn_pool = urllib3.PoolManager()   
+    #returns 2 dictionaries - key = merged trip ids, value = shortest distance in meters
+    def getShortestPathDetailDict(self,toShortPathSources,toShortPathDest):
+        shortPathDataDictSource = dict()
+        shortPathDataDictDest = dict()        
+        #get shortest path sources:
+        tic = time.clock()
+        toc = time.clock()
+        print (toc-tic)
+        print ("LALALALALA")
+        
+        sourceList = dict()
+        for key,value in toShortPathSources.items():
+            lonS1=value[0][0]
+            latS1=value[0][1]
+            lonS2=value[0][2]
+            latS2=value[0][3]
+            osrmURL = "http://localhost:5000/route/v1/driving/"+str(lonS1) +","+str(latS1)+";"+str(lonS2)+","+str(latS2)+"?overview=false";
+            sourceList[key] = osrmURL
+        
+        destList = dict()
+        for key,value in toShortPathDest.items():
+            lonD1=value[0][0]
+            latD1=value[0][1]
+            lonD2=value[0][2]
+            latD2=value[0][3]
+            osrmURL = "http://localhost:5000/route/v1/driving/"+str(lonD1) +","+str(latD1)+";"+str(lonD2)+","+str(latD2)+"?overview=false";
+            destList[key]=osrmURL
+        
+       
+        return shortPathDataDictSource,shortPathDataDictDest
+    
+    def doWork(self):
+        while True:
+            url,key = q.get()
+            status, resp = self.getReq(url)
+            self.processReq(status, resp, key)
+            q.task_done()
+            
+    def getReq(self,url):
+        try:
+            resp = self.conn_pool.request('GET', url)
+            return resp.status, resp
+        except:
+            return 999, None
+        
+    def processReq(self,status, resp, qid):
+        try:
+            dataDictSource = json.loads(resp.data.decode('utf-8'))
+            tot_time_s = json_geocode['paths'][0]['time']
+            tot_dist_m = json_geocode['paths'][0]['distance']
+            out = [qid, 200, tot_time_s, tot_dist_m]
+        except Exception as err:
+            print("Error: ", err, qid, url)
+            out = [qid, 999, 0, 0]
+        qres.put(out)
+        return
+    
+  
+
+
+
+
+
+#Run:
+qres = Queue()
+q = Queue(concurrent)
+for i in range(concurrent):
+    t = Thread(target=doWork)
+    t.daemon = True
+    t.start()
+for url in url_routes:
+    q.put(url)
+q.join()
+# Get results
+calc_routes = [qres.get() for _ in range(len(url_routes))]

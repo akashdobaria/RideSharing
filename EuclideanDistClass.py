@@ -6,6 +6,7 @@ Created on Wed Mar 21 14:50:01 2018
 """
 
 import RideDetailsClass
+import time
 
 
 #input - location dictionary
@@ -33,11 +34,12 @@ class EuclideanDistance:
         toShortPathDest = dict()
         
         #listofLocationList = list()
+        tic = time.clock()
         for key,value in locationDictioary.items():
-            lon1 = value[0]
-            lat1 = value[1]
-            lon1Dest = value[2]
-            lat1Dest = value[3]
+            lon1 = '%.3f'%(value[0])
+            lat1 = '%.3f'%(value[1])
+            lon1Dest = '%.3f'%(value[2])
+            lat1Dest = '%.3f'%(value[3])
             trip_id1 = key
             
             #check if the trip is an independent trip
@@ -46,10 +48,10 @@ class EuclideanDistance:
             
             del locationDict2[key] 
             for key2,value2 in locationDict2.items():
-                lon2 = value2[0]
-                lat2 = value2[1]
-                lon2Dest = value2[2]
-                lat2Dest = value2[3]
+                lon2 = '%.3f'%(value2[0])
+                lat2 = '%.3f'%(value2[1])
+                lon2Dest = '%.3f'%(value2[2])
+                lat2Dest = '%.3f'%(value2[3])
                 trip_id2 = key2
                 
                 #trips will not merge if both have passenger count as 2
@@ -113,6 +115,8 @@ class EuclideanDistance:
                         nextPoolIds.add(trip_id1)
                     if(not trip_id2 in usedPoolIds):
                         nextPoolIds.add(trip_id2)
+        toc = time.clock()
+        print(toc-tic)
                                     
         #print (len(euclideanDict))
         return euclideanDictSources,euclideanDictDestinations,nextPoolIds,toShortPathSources,toShortPathDest,individualTrips
